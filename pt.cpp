@@ -74,7 +74,7 @@ void PT::run()
         socket->waitForBytesWritten();
         gettimeofday(&end,NULL);
         double timeuse =( end.tv_sec - start.tv_sec ) + (double)((double)end.tv_usec - (double)start.tv_usec)/1000000;
-        std::cout<<"Send Picture "<<(float)timeuse<<std::endl;
+        //std::cout<<"Send Picture "<<(float)timeuse<<std::endl;
     }
     std::cout<<"Connection Lost!\n";
     goto tcp;

@@ -58,11 +58,11 @@ int main(int argc, char *argv[])
         QByteArray arr;
         arr.resize(UdpServer.bytesAvailable());
         UdpServer.readDatagram(arr.data(),arr.size(),&targetaddr,&targetport);
+        cout<<arr.toStdString()<<endl<<targetaddr.toString().toStdString()<<':'<<targetport<<endl;
         if(!arr.isEmpty())
         {
             if(arr=="Hello")
             {
-                cout<<arr.toStdString()<<endl<<targetaddr.toString().toStdString()<<':'<<targetport<<endl;
                 QString da="Nice to meet you";
                 QByteArray dataGram=da.toUtf8();
                 UdpServer.writeDatagram(dataGram,targetaddr,targetport);
@@ -88,7 +88,8 @@ int main(int argc, char *argv[])
             serialPrintf(fd,"Y%f\n",yaw);
         }
         QByteArray buf;
-        buf=readline(fd).c_str();
+        if(serialDataAvail(fd)>0)
+            buf=readline(fd).c_str();
         cout<<buf.toStdString();
         if(!buf.isEmpty())
         {
@@ -114,7 +115,7 @@ int main(int argc, char *argv[])
                     rem=str;
                     return;
                 }*/
-            cout<< str.toStdString()<<endl;
+            //cout<< str.toStdString()<<endl;
             for(int i=0;i<s.size();i++)
             {
                 string s1;
