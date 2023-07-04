@@ -22,11 +22,11 @@ std::string gstreamer_pipeline(int capture_width, int capture_height, int framer
 
 void PT::run()
 {
-    int capture_width = 320 ;//1280 ;
-    int capture_height = 240; //720 ;
+    int capture_width = 800 ;//1280 ;
+    int capture_height = 600; //720 ;
     int framerate = 15 ;
-    int display_width = 160; //1280 ;
-    int display_height = 120; //720 ;
+    int display_width = 800; //1280 ;
+    int display_height = 600; //720 ;
     Mat srcImage;
     std::string pipeline = gstreamer_pipeline(capture_width, capture_height, framerate,display_width, display_height);
     VideoCapture videoCap(pipeline, cv::CAP_GSTREAMER);;
@@ -60,7 +60,7 @@ void PT::run()
         QByteArray baim,img="end\n",st="start\n",el="\n";
         QBuffer buffer(&baim);
         buffer.open(QIODevice::ReadWrite);
-        qsrcImage.save(&buffer, "PNG");
+        qsrcImage.save(&buffer, "JPG");
         baim=qCompress(baim,6);
         baim=baim.toBase64();
 

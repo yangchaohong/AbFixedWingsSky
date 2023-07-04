@@ -1,12 +1,17 @@
 #include <QCoreApplication>
+#include <QObject>
+#include <QtCore>
 #include <QUdpSocket>
 #include <bits/stdc++.h>
 #include "pt.h"
 #include <QTcpServer>
-#include <QSerialPortInfo>
+//#include <QSerialPortInfo>
 #include <QTcpSocket>
-#include <QSerialPort>
+//#include <QSerialPort>
+#include "udpreceiver.h"
 #include <wiringSerial.h>
+#include "receiverthr.h"
+#include <unistd.h>
 using namespace std;
 using namespace cv;
 string readline(int fd)
@@ -24,80 +29,45 @@ int main(int argc, char *argv[])
 {
     QCoreApplication a(argc, argv);
 
-    QSerialPort serial;
     cout<<"AbFixedWing 0.0\n";
     ifstream portf("port.txt");
-    QHostAddress targetaddr;//ip
-    quint16 targetport;
-    int port;
-    portf>>port;
-    QUdpSocket UdpServer;
-    bool connected=0;
-    UdpServer.bind(QHostAddress::Any, port);
-    float pitch,roll,pitchNeed,rollNeed;
+
+    receiverthr rthr;
+    rthr.receiver=new UdpReceiver;
+    portf>>rthr.receiver->port;
+
+    rthr.start();
+    float pitch,roll;
     PT pt;
     pt.isRuning=1;
     pt.start();
     /*————————————————
     版权声明：本文为CSDN博主「-- 好名字 --」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
     原文链接：https://blog.csdn.net/weixin_37789780/article/details/122468637*/
-    int fd ;
 
-    if ((fd = serialOpen ("/dev/serial0", 9600)) < 0)
-    {
-        fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
-        return 1 ;
-    }
     /*————————————————
     版权声明：本文为CSDN博主「hu5566798」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
     原文链接：https://blog.csdn.net/hu5566798/article/details/80777121*/
     QString str,rem;
     bool first;
+
+
+
+    if ((rthr.receiver->fd = serialOpen ("/dev/ttyACM0", 9600)) < 0)
+    {
+        fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
+    }
+
     while(1)
     {
-        QByteArray arr;
-        arr.resize(UdpServer.bytesAvailable());
-        UdpServer.readDatagram(arr.data(),arr.size(),&targetaddr,&targetport);
-        cout<<arr.toStdString()<<endl<<targetaddr.toString().toStdString()<<':'<<targetport<<endl;
-        if(!arr.isEmpty())
-        {
-            if(arr=="Hello")
-            {
-                QString da="Nice to meet you";
-                QByteArray dataGram=da.toUtf8();
-                UdpServer.writeDatagram(dataGram,targetaddr,targetport);
-                connected=1;
-            }
 
-        }
-        if(arr[0]=='P')
-        {
-            pitchNeed=stof(arr.toStdString().substr(1,arr.toStdString().size()-1));
-
-        }
-        serialPrintf(fd,"P%f\n",pitchNeed);
-        if(arr[0]=='R')
-        {
-            rollNeed=stof(arr.toStdString().substr(1,arr.toStdString().size()-1));
-
-        }
-        serialPrintf(fd,"R%f\n",rollNeed);
-        if(arr[0]=='Y')
-        {
-            float yaw=stof(arr.toStdString().substr(1,arr.toStdString().size()-1));
-            serialPrintf(fd,"Y%f\n",yaw);
-        }
         QByteArray buf;
-        if(serialDataAvail(fd)>0)
-            buf=readline(fd).c_str();
-        cout<<buf.toStdString();
+        if(serialDataAvail(rthr.receiver->fd)>0)
+            buf=readline(rthr.receiver->fd).c_str();
+        //buf+='\n';
+        //cout<<buf.toStdString();
         if(!buf.isEmpty())
         {
-            if(buf[buf.size()-1]!='\n')
-            {
-                rem+=buf;
-                continue;
-            }
             if(!first)
             {
                 if(buf[0]!='A')
@@ -129,13 +99,21 @@ int main(int argc, char *argv[])
             }
             roll=e[6].toFloat();
             pitch=e[7].toFloat();
+            cout<<"HAHAHA:"<<roll<<' '<<pitch<<endl;
         }
-        if(1)
+        if(rthr.receiver->connected=1)
         {
-            QByteArray dataGram="R"+QString::fromLocal8Bit(to_string(roll).c_str()).toUtf8();
-            UdpServer.writeDatagram(dataGram.data(),dataGram.size(),targetaddr,targetport);
+            //QString da="Nice to meet you\n";
+            QByteArray dataGram;
+            //rthr.receiver->UdpServer->writeDatagram(dataGram,rthr.receiver->targetaddr,rthr.receiver->targetport);
+            //rthr.receiver->UdpServer->waitForBytesWritten(1000);
+            dataGram="R"+QString::fromLocal8Bit(to_string(roll).c_str()).toUtf8();
+            rthr.receiver->UdpServer->writeDatagram(dataGram.data(),dataGram.size(),rthr.receiver->targetaddr,rthr.receiver->targetport);
+            rthr.receiver->UdpServer->waitForBytesWritten(1000);
             dataGram="P"+QString::fromLocal8Bit(to_string(pitch).c_str()).toUtf8();
-            UdpServer.writeDatagram(dataGram.data(),dataGram.size(),targetaddr,targetport);
+            rthr.receiver->UdpServer->writeDatagram(dataGram.data(),dataGram.size(),rthr.receiver->targetaddr,rthr.receiver->targetport);
+            rthr.receiver->UdpServer->waitForBytesWritten(1000);
+            usleep(5000);
         }
     }
     return 0;

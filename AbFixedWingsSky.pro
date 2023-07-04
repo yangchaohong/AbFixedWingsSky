@@ -2,7 +2,7 @@ QT -= gui
 QT += network \
     widgets
 QT += multimedia multimediawidgets
-QT       += serialport
+#QT       += serialport
 
 CONFIG += c++11 console
 CONFIG -= app_bundle
@@ -12,7 +12,9 @@ CONFIG -= app_bundle
 #DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += main.cpp \
-    pt.cpp
+    pt.cpp \
+    receiverthr.cpp \
+    udpreceiver.cpp
 
 TRANSLATIONS += \
     AbFixedWingsSky_zh_CN.ts
@@ -31,6 +33,8 @@ LIBS += -lopencv_imgproc
 INCLUDEPATH += /usr/include/libcamera/libcamera
 
 HEADERS += \
-    pt.h
+    pt.h \
+    receiverthr.h \
+    udpreceiver.h
 
 
