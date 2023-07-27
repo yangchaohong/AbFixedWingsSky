@@ -101,7 +101,7 @@ int main(int argc, char *argv[])
             pitch=e[7].toFloat();
             cout<<"HAHAHA:"<<roll<<' '<<pitch<<endl;
         }
-        if(rthr.receiver->connected=1)
+        if(rthr.receiver->connected==1)
         {
             //QString da="Nice to meet you\n";
             QByteArray dataGram;
