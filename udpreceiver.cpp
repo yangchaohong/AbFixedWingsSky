@@ -17,6 +17,7 @@ void UdpReceiver::readyData()
     if(arr=="Hello")
     {
         connected=1;
+	//cout<<targetaddr.toString().toStdString()<<':'<<targetport<<endl;
     }
     if(arr[0]=='P')
     {

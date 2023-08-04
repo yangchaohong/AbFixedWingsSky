@@ -40,6 +40,7 @@ int main(int argc, char *argv[])
     float pitch,roll;
     PT pt;
     pt.isRuning=1;
+    cout<<"Hello World!\n";
     pt.start();
     /*————————————————
     版权声明：本文为CSDN博主「-- 好名字 --」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
@@ -53,19 +54,21 @@ int main(int argc, char *argv[])
 
 
 
-    if ((rthr.receiver->fd = serialOpen ("/dev/ttyACM0", 9600)) < 0)
+    if ((rthr.receiver->fd = serialOpen ("/dev/ttyUSB0", 9600)) < 0)
     {
         fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
+        return -1;
     }
 
-    while(1)
+    for(;;)
     {
-
+        //cout<<"123\n";
         QByteArray buf;
         if(serialDataAvail(rthr.receiver->fd)>0)
             buf=readline(rthr.receiver->fd).c_str();
         //buf+='\n';
         //cout<<buf.toStdString();
+        
         if(!buf.isEmpty())
         {
             if(!first)
@@ -113,8 +116,7 @@ int main(int argc, char *argv[])
             dataGram="P"+QString::fromLocal8Bit(to_string(pitch).c_str()).toUtf8();
             rthr.receiver->UdpServer->writeDatagram(dataGram.data(),dataGram.size(),rthr.receiver->targetaddr,rthr.receiver->targetport);
             rthr.receiver->UdpServer->waitForBytesWritten(1000);
-            usleep(5000);
+            //usleep(5000);
         }
     }
-    return 0;
 }

@@ -4,7 +4,7 @@ QT += network \
 QT += multimedia multimediawidgets
 #QT       += serialport
 
-CONFIG += c++11 console
+CONFIG += c++17 console
 CONFIG -= app_bundle
 
 # You can make your code fail to compile if it uses deprecated APIs.
@@ -30,7 +30,6 @@ LIBS += -lopencv_core
 LIBS += -lopencv_video
 LIBS += -lopencv_videoio
 LIBS += -lopencv_imgproc
-INCLUDEPATH += /usr/include/libcamera/libcamera
 
 HEADERS += \
     pt.h \

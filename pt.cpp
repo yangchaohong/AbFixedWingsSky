@@ -29,7 +29,20 @@ void PT::run()
     int display_height = 600; //720 ;
     Mat srcImage;
     std::string pipeline = gstreamer_pipeline(capture_width, capture_height, framerate,display_width, display_height);
-    VideoCapture videoCap(pipeline, cv::CAP_GSTREAMER);;
+    VideoCapture videoCap;
+    //videoCap.set(cv::CV_CAP_PROP_FPS, 30);
+    //图像分辨率640×480
+
+    int deviceID = 0; //相机设备号
+    
+    videoCap.open(deviceID); //打开相机
+    videoCap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M','J','P','G')); 
+    videoCap.set(cv::CAP_PROP_FRAME_WIDTH, 160); //图像的宽，需要相机支持此宽
+    videoCap.set(cv::CAP_PROP_FRAME_HEIGHT, 120); //图像的高，需要相机支持此高
+    videoCap.set(cv::CAP_PROP_FPS, 30);
+/*————————————————
+版权声明：本文为CSDN博主「网络通杀108」的原创文章，遵循CC 4.0 BY-SA版权协议，转载请附上原文出处链接及本声明。
+原文链接：https://blog.csdn.net/czsnooker/article/details/118360220*/
     if (!videoCap.isOpened())
     {
         std::cerr << "ERROR! Unable to open camera.\n";
