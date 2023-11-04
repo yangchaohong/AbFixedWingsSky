@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
 
 
 
-    if ((rthr.receiver->fd = serialOpen ("/dev/ttyACM0", 9600)) < 0)
+    if ((rthr.receiver->fd = serialOpen ("/dev/ttyUSB0", 115200)) < 0)
     {
         fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
     }

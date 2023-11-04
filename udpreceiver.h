@@ -15,7 +15,7 @@ public:
     quint16 targetport;
     bool connected=0;
     float pitchNeed=0,pitch_old=0,rollNeed=0,roll_old=0;
-    int fd ;
+    int fd,flap;
     int init();
 public slots:
     void readyData();

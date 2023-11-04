@@ -44,6 +44,13 @@ void UdpReceiver::readyData()
 
         throttle=stoi(arr.toStdString().substr(1,arr.toStdString().size()-1));
     }
+    if(arr[0]=='F')
+    {
+
+        flap=stoi(arr.toStdString().substr(1,arr.toStdString().size()-1));
+        serialPrintf(fd,"F%d\n",flap);
+        cout<<'F'<<flap<<endl;
+    }
     if(throttle_old!=throttle)
         serialPrintf(fd,"T%d\n",throttle),
                 cout<<'T'<<throttle_old<<' '<<throttle<<endl,
