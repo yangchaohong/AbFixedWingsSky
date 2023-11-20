@@ -23,6 +23,13 @@ string readall(int fd)
         c=serialGetchar(fd);
         s+=c;
     }
+    
+    do
+    {
+        c=serialGetchar(fd);
+        s+=c;
+    }while(c!='\n');
+
     return s;
 }
 string getlastline(string s)
