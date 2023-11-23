@@ -3,7 +3,7 @@ AbFixedWings For Raspberry Pi
 
 构建：使用Qt 5.15构建
 
-How to compile-on Raspberry Zero 2W:
+How to compile-on Raspberry Pi Zero 2W:
 
 1.Install necessary packages by apt
 
