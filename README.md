@@ -19,13 +19,17 @@ How to compile-on Orange Pi Zero 2W:
 
 3.Edit codes to support your platform
 
-  main.cpp line 72:    if ((rthr.receiver->fd = serialOpen ("/dev/ttyUSB0", 115200)) < 0)
+  main.cpp line 72:    
+  
+                          if ((rthr.receiver->fd = serialOpen ("/dev/ttyUSB0", 115200)) < 0)
   
                                                                       ↑
                                                                       
                                                           Change it to your UART Port
 
-  pt.cpp line 33~39: int deviceID = 0; //相机设备号
+  pt.cpp line 33~39: 
+  
+                     int deviceID = 0; //相机设备号
 
                      videoCap.open(deviceID); //打开相机
     
@@ -49,4 +53,12 @@ How to compile-on Orange Pi Zero 2W:
   
   make -j2
 
-5.Run it by "sudo ./AbFixedWingsSky"
+5.Create port.txt
+
+  add your ports of data trans and picture trans ports to port.txt like this:
+
+  1354
+
+  1145
+
+6.Run it by "sudo ./AbFixedWingsSky"
