@@ -20,6 +20,7 @@ How to compile-on Raspberry Pi Zero 2W:
 3.Edit codes to support your platform
 
   main.cpp line 72:    
+  
                           if ((rthr.receiver->fd = serialOpen ("/dev/ttyUSB0", 115200)) < 0)
   
                                                                       ↑
@@ -27,6 +28,7 @@ How to compile-on Raspberry Pi Zero 2W:
                                                           Change it to your UART Port
 
   pt.cpp line 25~29: 
+  
                      int capture_width = 800 ;//1280 ;
   
                      int capture_height = 600; //720 ;
