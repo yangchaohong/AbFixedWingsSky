@@ -14,16 +14,32 @@
 #include <unistd.h>
 using namespace std;
 using namespace cv;
-string readline(int fd)
+string readall(int fd)
 {
     string s="";
     char c=0;
-    while(c!='\n')
+    while(serialDataAvail(fd))
     {
         c=serialGetchar(fd);
         s+=c;
     }
+
+    while(c!='\n')
+    {
+        c=serialGetchar(fd);
+	s+=c;
+    }
+
     return s;
+}
+string getlastline(string s)
+{
+    string last="\n";
+    int j;
+    for(j=s.size()-1;s[j]!='\n'&&j>=0;j--);
+    for(j--;s[j]!='\n'&&j>=0;j--)
+        last=s[j]+last;
+    return last;
 }
 int main(int argc, char *argv[])
 {
@@ -63,9 +79,9 @@ int main(int argc, char *argv[])
 
         QByteArray buf;
         if(serialDataAvail(rthr.receiver->fd)>0)
-            buf=readline(rthr.receiver->fd).c_str();
+            buf=getlastline(readall(rthr.receiver->fd)).c_str();
         //buf+='\n';
-        //cout<<buf.toStdString();
+        cout<<buf.toStdString();
         if(!buf.isEmpty())
         {
             if(!first)
@@ -113,8 +129,8 @@ int main(int argc, char *argv[])
             dataGram="P"+QString::fromLocal8Bit(to_string(pitch).c_str()).toUtf8();
             rthr.receiver->UdpServer->writeDatagram(dataGram.data(),dataGram.size(),rthr.receiver->targetaddr,rthr.receiver->targetport);
             rthr.receiver->UdpServer->waitForBytesWritten(1000);
-            usleep(5000);
         }
+	usleep(100000);
     }
     return 0;
 }

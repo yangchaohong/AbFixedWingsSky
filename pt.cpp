@@ -29,7 +29,14 @@ void PT::run()
     int display_height = 600; //720 ;
     Mat srcImage;
     std::string pipeline = gstreamer_pipeline(capture_width, capture_height, framerate,display_width, display_height);
-    VideoCapture videoCap(pipeline, cv::CAP_GSTREAMER);;
+    VideoCapture videoCap;
+    int deviceID = 0; //相机设备号
+
+    videoCap.open(deviceID); //打开相机
+    videoCap.set(cv::CAP_PROP_FOURCC, cv::VideoWriter::fourcc('M','J','P','G'));
+    videoCap.set(cv::CAP_PROP_FRAME_WIDTH, 640); //图像的宽，需要相机支持此宽
+    videoCap.set(cv::CAP_PROP_FRAME_HEIGHT, 480); //图像的高，需要相机支持此高
+    videoCap.set(cv::CAP_PROP_FPS, 30);
     if (!videoCap.isOpened())
     {
         std::cerr << "ERROR! Unable to open camera.\n";
@@ -50,8 +57,8 @@ void PT::run()
     {
         //socket->waitForReadyRead(1000);
         //std::cout<<socket->readAll().toStdString()<<std::endl;
-        timeval start,end;
-        gettimeofday(&start,NULL);
+        //timeval start,end;
+        //gettimeofday(&start,NULL);
         videoCap.read(srcImage);
         if(srcImage.empty())
             std::cerr<<"ERROR CAM!\n";
@@ -72,8 +79,8 @@ void PT::run()
         socket->waitForBytesWritten();
         socket->write(img);
         socket->waitForBytesWritten();
-        gettimeofday(&end,NULL);
-        double timeuse =( end.tv_sec - start.tv_sec ) + (double)((double)end.tv_usec - (double)start.tv_usec)/1000000;
+        //gettimeofday(&end,NULL);
+        //double timeuse =( end.tv_sec - start.tv_sec ) + (double)((double)end.tv_usec - (double)start.tv_usec)/1000000;
         //std::cout<<"Send Picture "<<(float)timeuse<<std::endl;
     }
     std::cout<<"Connection Lost!\n";

@@ -31,6 +31,7 @@ LIBS += -lopencv_video
 LIBS += -lopencv_videoio
 LIBS += -lopencv_imgproc
 INCLUDEPATH += /usr/include/libcamera/libcamera
+INCLUDEPATH += /usr/include/opencv4
 
 HEADERS += \
     pt.h \
