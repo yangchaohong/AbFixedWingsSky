@@ -12,22 +12,24 @@
 #include <wiringSerial.h>
 #include "receiverthr.h"
 #include <unistd.h>
+
 using namespace std;
 using namespace cv;
+
 string readall(int fd)
 {
     string s="";
     char c=0;
-    while(serialDataAvail(fd))
+    while(dataAvail(fd))
     {
-        c=serialGetchar(fd);
+        c=readSerialByte(fd,50);
         s+=c;
     }
 
     while(c!='\n')
     {
-        c=serialGetchar(fd);
-	s+=c;
+        c=readSerialByte(fd,1000);
+        s+=c;
     }
 
     return s;
@@ -47,7 +49,8 @@ int main(int argc, char *argv[])
 
     cout<<"AbFixedWing 0.0\n";
     ifstream portf("port.txt");
-
+    string uf;
+    portf>>uf;
     receiverthr rthr;
     rthr.receiver=new UdpReceiver;
     portf>>rthr.receiver->port;
@@ -67,11 +70,18 @@ int main(int argc, char *argv[])
     QString str,rem;
     bool first;
 
+    char uart[30];
+    strcpy(uart, uf.c_str());
 
-
-    if ((rthr.receiver->fd = serialOpen ("/dev/ttyUSB0", 115200)) < 0)
+    if ((rthr.receiver->fd = open(uart, O_RDWR | O_NOCTTY | O_NDELAY)) < 0)
     {
         fprintf (stderr, "Unable to open serial device: %s\n", strerror (errno)) ;
+    }
+    else
+    {
+        printf("open %s is success\n",uart);
+        set_opt(rthr.receiver->fd, 9600, 8, 'N', 1);
+        rthr.receiver->coned=1;
     }
 
     while(1)
@@ -81,15 +91,13 @@ int main(int argc, char *argv[])
         if(serialDataAvail(rthr.receiver->fd)>0)
             buf=getlastline(readall(rthr.receiver->fd)).c_str();
         //buf+='\n';
-        cout<<buf.toStdString();
+        //cout<<buf.toStdString();
         if(!buf.isEmpty())
         {
-            if(!first)
+            if(buf[0]!='A')
             {
-                if(buf[0]!='A')
-                    continue;
-                else
-                    first=1;
+                cout<<buf.toStdString();
+                continue;
             }
             QString e[10];
             str=rem+buf;
@@ -115,7 +123,7 @@ int main(int argc, char *argv[])
             }
             roll=e[6].toFloat();
             pitch=e[7].toFloat();
-            cout<<"HAHAHA:"<<roll<<' '<<pitch<<endl;
+            //cout<<"HAHAHA:"<<roll<<' '<<pitch<<endl;
         }
         if(rthr.receiver->connected==1)
         {
@@ -130,7 +138,7 @@ int main(int argc, char *argv[])
             rthr.receiver->UdpServer->writeDatagram(dataGram.data(),dataGram.size(),rthr.receiver->targetaddr,rthr.receiver->targetport);
             rthr.receiver->UdpServer->waitForBytesWritten(1000);
         }
-	usleep(100000);
+        usleep(100000);
     }
     return 0;
 }

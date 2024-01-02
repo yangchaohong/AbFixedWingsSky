@@ -14,6 +14,7 @@ CONFIG -= app_bundle
 SOURCES += main.cpp \
     pt.cpp \
     receiverthr.cpp \
+    uart.cpp \
     udpreceiver.cpp
 
 TRANSLATIONS += \
@@ -36,6 +37,7 @@ INCLUDEPATH += /usr/include/opencv4
 HEADERS += \
     pt.h \
     receiverthr.h \
+    uart.h \
     udpreceiver.h
 
 
