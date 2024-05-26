@@ -49,11 +49,7 @@ How to compile-on Your Board:
 
   replace codes in file pt.cpp from line 32 to line 39 with
 
-    VideoCapture videoCap(pipeline, cv::CAP_GSTREAMER);;
-    if (!videoCap.isOpened())
-    {
-        std::cerr << "ERROR! Unable to open camera.\n";
-    }
+    VideoCapture videoCap(pipeline, cv::CAP_GSTREAMER);
 
 4.Compile it!
 
