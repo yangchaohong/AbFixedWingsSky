@@ -3,7 +3,7 @@
 int dataAvail(int fd)
 {
     int bytes;
-    ioctl(fd, TIOCOUTQ, &bytes);
+    ioctl(fd, TIOCINQ, &bytes);
     return bytes;
 }
 

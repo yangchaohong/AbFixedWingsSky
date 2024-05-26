@@ -25,7 +25,7 @@ qnx: target.path = /tmp/$${TARGET}/bin
 else: unix:!android: target.path = /opt/$${TARGET}/bin
 !isEmpty(target.path): INSTALLS += target
 
-LIBS += -lwiringPi
+#LIBS += -lwiringPi
 LIBS += -lopencv_highgui
 LIBS += -lopencv_core
 LIBS += -lopencv_video

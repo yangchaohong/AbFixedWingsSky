@@ -9,7 +9,7 @@
 #include <QTcpSocket>
 //#include <QSerialPort>
 #include "udpreceiver.h"
-#include <wiringSerial.h>
+//#include <wiringSerial.h>
 #include "receiverthr.h"
 #include <unistd.h>
 
@@ -49,8 +49,8 @@ int main(int argc, char *argv[])
 
     cout<<"AbFixedWing 0.0\n";
     ifstream portf("port.txt");
-    string uf;
-    portf>>uf;
+    string uf="/dev/ttyUSB0";
+    //portf>>uf;
     receiverthr rthr;
     rthr.receiver=new UdpReceiver;
     portf>>rthr.receiver->port;
@@ -88,8 +88,8 @@ int main(int argc, char *argv[])
     {
 
         QByteArray buf;
-        if(serialDataAvail(rthr.receiver->fd)>0)
-            buf=getlastline(readall(rthr.receiver->fd)).c_str();
+
+        buf=getlastline(readall(rthr.receiver->fd)).c_str();
         //buf+='\n';
         //cout<<buf.toStdString();
         if(!buf.isEmpty())
@@ -123,7 +123,7 @@ int main(int argc, char *argv[])
             }
             roll=e[6].toFloat();
             pitch=e[7].toFloat();
-            //cout<<"HAHAHA:"<<roll<<' '<<pitch<<endl;
+            cout<<"HAHAHA:"<<roll<<' '<<pitch<<endl;
         }
         if(rthr.receiver->connected==1)
         {
