@@ -1,23 +1,23 @@
 # AbFixedWingsSky
 AbFixedWings For Raspberry Pi
 
-构建：使用Qt 5.15构建
+Code based on Qt 5.15.x
 
-How to compile-on Orange Pi Zero 2W:
+I cannot use CMake,so the project will not graft to Qt 6.(╥﹏╥)
+
+How to compile-on Your Board:
 
 1.Install necessary packages by apt
 
   sudo apt install git build-essential libopencv-dev qtbase5-dev qtmultimedia5-dev
-
-  wget https://github.com/WiringPi/WiringPi/releases/download/2.61-1/wiringpi-2.61-1-arm64.deb
-
-  sudo dpkg -i wiringpi-2.61-1-arm64.deb
-
+  
 2.Pull codes from Github
 
   git clone https://github.com/yangchaohong/AbFixedWingsSky
 
-3.Edit codes to support your platform
+3.Edit codes to support your camera
+
+  USB(UVC) Camera or other Camera based on V4L2:
 
   main.cpp line 72:    
   
@@ -44,6 +44,16 @@ How to compile-on Orange Pi Zero 2W:
                                            ↑
 
                   Change resolution and frame rate to suit the camera
+  
+  Raspberry Pi libcamera:
+
+  replace codes in file pt.cpp from line 32 to line 39 with
+
+    VideoCapture videoCap(pipeline, cv::CAP_GSTREAMER);;
+    if (!videoCap.isOpened())
+    {
+        std::cerr << "ERROR! Unable to open camera.\n";
+    }
 
 4.Compile it!
 
